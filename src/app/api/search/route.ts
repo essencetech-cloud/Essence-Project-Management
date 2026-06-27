@@ -10,9 +10,11 @@ export async function GET(request: Request) {
   const q = searchParams.get('q')?.trim()
   if (!q || q.length < 2) return NextResponse.json({ tasks: [], docs: [], projects: [] })
 
-  const memberProjectIds = await db.projectMember
-    .findMany({ where: { user_id: session.userId }, select: { project_id: true } })
-    .then((rows) => rows.map((r: { project_id: string }) => r.project_id))
+  const memberRows = await db.projectMember.findMany({
+    where: { user_id: session.userId },
+    select: { project_id: true },
+  })
+  const memberProjectIds = memberRows.map((r: (typeof memberRows)[number]) => r.project_id)
 
   const isSuperAdmin = session.systemRole === 'SUPER_ADMIN'
   const projectFilter = isSuperAdmin ? {} : { id: { in: memberProjectIds } }
