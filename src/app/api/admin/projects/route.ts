@@ -17,7 +17,7 @@ export async function GET() {
     orderBy: { created_at: 'desc' },
   })
 
-  return NextResponse.json(projects.map((p) => ({
+  return NextResponse.json(projects.map((p: (typeof projects)[number]) => ({
     id: p.id,
     name: p.name,
     color: p.color,
