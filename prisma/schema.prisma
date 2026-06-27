@@ -1,0 +1,168 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum SystemRole {
+  SUPER_ADMIN
+  MEMBER
+}
+
+enum ProjectRole {
+  OWNER
+  ADMIN
+  DEVELOPER
+  DESIGNER
+  VIEWER
+}
+
+model User {
+  id            String     @id @default(uuid())
+  full_name     String
+  email         String     @unique
+  password_hash String
+  avatar_color  String     @default("indigo")
+  systemRole    SystemRole @default(MEMBER)
+  created_at    DateTime   @default(now())
+
+  projects_created    Project[]
+  tasks_created       Task[]          @relation("TaskCreator")
+  tasks_assigned      Task[]          @relation("TaskAssignee")
+  tasks_archived      Task[]          @relation("TaskArchiver")
+  docs_created        Doc[]           @relation("DocCreator")
+  docs_updated        Doc[]           @relation("DocEditor")
+  project_members     ProjectMember[]
+  activity_logs       ActivityLog[]
+  notifications       Notification[]
+  comments            Comment[]
+  attachments_uploaded Attachment[]   @relation("AttachmentUploader")
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  color       String   @default("indigo")
+  created_by  String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  creator       User            @relation(fields: [created_by], references: [id])
+  members       ProjectMember[]
+  tasks         Task[]
+  docs          Doc[]
+  activity_logs ActivityLog[]
+}
+
+model ProjectMember {
+  id         String      @id @default(uuid())
+  project_id String
+  user_id    String
+  role       ProjectRole @default(VIEWER)
+  joined_at  DateTime    @default(now())
+
+  project Project @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([project_id, user_id])
+}
+
+model Task {
+  id          String    @id @default(uuid())
+  project_id  String
+  title       String
+  description String?
+  column      String    @default("todo")
+  tag         String    @default("feature")
+  priority    String    @default("medium")
+  position    Float     @default(0)
+  assignee_id String?
+  created_by  String
+  due_date    DateTime?
+  archived_at DateTime?
+  archived_by String?
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+
+  project     Project      @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  assignee    User?        @relation("TaskAssignee", fields: [assignee_id], references: [id])
+  creator     User         @relation("TaskCreator", fields: [created_by], references: [id])
+  archiver    User?        @relation("TaskArchiver", fields: [archived_by], references: [id])
+  comments    Comment[]
+  attachments Attachment[]
+}
+
+model Doc {
+  id         String   @id @default(uuid())
+  project_id String
+  title      String   @default("Untitled")
+  content    Json?
+  created_by String
+  updated_by String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  project     Project      @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  creator     User         @relation("DocCreator", fields: [created_by], references: [id])
+  editor      User?        @relation("DocEditor", fields: [updated_by], references: [id])
+  attachments Attachment[]
+}
+
+model ActivityLog {
+  id          String   @id @default(uuid())
+  project_id  String
+  user_id     String
+  action      String
+  entity_type String
+  entity_id   String?
+  entity_name String?
+  metadata    Json?
+  created_at  DateTime @default(now())
+
+  project Project @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model Comment {
+  id         String   @id @default(uuid())
+  task_id    String
+  user_id    String
+  body       String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  task Task @relation(fields: [task_id], references: [id], onDelete: Cascade)
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id         String   @id @default(uuid())
+  user_id    String
+  type       String
+  title      String
+  body       String?
+  link       String?
+  read       Boolean  @default(false)
+  created_at DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model Attachment {
+  id          String   @id @default(uuid())
+  task_id     String?
+  doc_id      String?
+  uploaded_by String
+  name        String
+  mime_type   String
+  size        Int
+  url         String
+  created_at  DateTime @default(now())
+
+  task     Task?    @relation(fields: [task_id], references: [id], onDelete: Cascade)
+  doc      Doc?     @relation(fields: [doc_id], references: [id], onDelete: Cascade)
+  uploader User     @relation("AttachmentUploader", fields: [uploaded_by], references: [id], onDelete: Cascade)
+}
