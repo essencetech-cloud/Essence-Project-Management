@@ -1,5 +1,5 @@
 import { db } from '@/lib/db'
-import type { ProjectRole, SystemRole } from '@prisma/client'
+import type { ProjectRole, SystemRole } from '@/lib/types'
 
 export async function getProjectRole(
   userId: string,

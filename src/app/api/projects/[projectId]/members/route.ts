@@ -3,7 +3,7 @@ import { getSessionUser } from '@/lib/auth-utils'
 import { db } from '@/lib/db'
 import { getProjectRole } from '@/lib/getProjectRole'
 import { can } from '@/lib/permissions'
-import type { ProjectRole } from '@prisma/client'
+import type { ProjectRole } from '@/lib/types'
 
 interface Params { params: Promise<{ projectId: string }> }
 

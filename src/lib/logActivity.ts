@@ -20,7 +20,7 @@ export function logActivity(params: LogActivityParams): void {
         entity_type: params.entity_type,
         entity_id: params.entity_id ?? null,
         entity_name: params.entity_name ?? null,
-        metadata: params.metadata ? (params.metadata as import('@prisma/client').Prisma.InputJsonValue) : undefined,
+        metadata: params.metadata ? (params.metadata as Record<string, string | number | boolean | null>) : undefined,
       },
     })
     .catch(() => {})

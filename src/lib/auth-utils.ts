@@ -1,7 +1,7 @@
 import { SignJWT, jwtVerify } from 'jose'
 import { cookies } from 'next/headers'
 import type { NextRequest } from 'next/server'
-import type { SystemRole } from '@prisma/client'
+import type { SystemRole } from '@/lib/types'
 
 const COOKIE = 'essence_token'
 const secret = () => new TextEncoder().encode(process.env.JWT_SECRET ?? 'dev-secret')

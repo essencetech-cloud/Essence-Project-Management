@@ -1,4 +1,4 @@
-import type { ProjectRole, SystemRole } from '@prisma/client'
+import type { ProjectRole, SystemRole } from '@/lib/types'
 export type { ProjectRole, SystemRole }
 
 export type Action =
