@@ -29,7 +29,7 @@ export async function GET(_req: Request, { params }: Params) {
     orderBy: { joined_at: 'asc' },
   })
 
-  return NextResponse.json(members.map((m) => ({
+  return NextResponse.json(members.map((m: (typeof members)[number]) => ({
     id: m.id,
     project_id: m.project_id,
     user_id: m.user_id,

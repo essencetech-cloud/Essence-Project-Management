@@ -26,7 +26,7 @@ export async function GET(_req: Request, { params }: Params) {
   })
 
   return NextResponse.json(
-    logs.map((l) => ({
+    logs.map((l: (typeof logs)[number]) => ({
       ...l,
       created_at: l.created_at.toISOString(),
     }))

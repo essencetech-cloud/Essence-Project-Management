@@ -65,7 +65,7 @@ export async function GET(_req: Request, { params }: Params) {
   ])
 
   const columnCounts = Object.fromEntries(
-    tasksByColumn.map((r) => [r.column, r._count._all])
+    tasksByColumn.map((r: (typeof tasksByColumn)[number]) => [r.column, r._count._all])
   )
 
   return NextResponse.json({
@@ -79,11 +79,11 @@ export async function GET(_req: Request, { params }: Params) {
       completionRate: totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0,
     },
     columnCounts,
-    myTasks: myTasks.map((t) => ({
+    myTasks: myTasks.map((t: (typeof myTasks)[number]) => ({
       ...t,
       due_date: t.due_date ? t.due_date.toISOString().split('T')[0] : null,
     })),
-    recentActivity: recentActivity.map((a) => ({
+    recentActivity: recentActivity.map((a: (typeof recentActivity)[number]) => ({
       ...a,
       created_at: a.created_at.toISOString(),
     })),

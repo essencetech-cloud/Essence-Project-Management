@@ -17,7 +17,7 @@ export async function GET() {
   })
 
   return NextResponse.json(
-    projects.map((p) => ({
+    projects.map((p: (typeof projects)[number]) => ({
       ...p,
       created_at: p.created_at.toISOString(),
       updated_at: p.updated_at.toISOString(),

@@ -84,6 +84,6 @@ export async function GET(request: Request) {
   })
 
   return NextResponse.json(
-    attachments.map((a) => ({ ...a, created_at: a.created_at.toISOString() }))
+    attachments.map((a: (typeof attachments)[number]) => ({ ...a, created_at: a.created_at.toISOString() }))
   )
 }

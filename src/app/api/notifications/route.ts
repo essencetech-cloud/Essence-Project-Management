@@ -19,6 +19,6 @@ export async function GET(request: Request) {
   })
 
   return NextResponse.json(
-    notifications.map((n) => ({ ...n, created_at: n.created_at.toISOString() }))
+    notifications.map((n: (typeof notifications)[number]) => ({ ...n, created_at: n.created_at.toISOString() }))
   )
 }

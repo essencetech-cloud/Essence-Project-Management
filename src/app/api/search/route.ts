@@ -12,7 +12,7 @@ export async function GET(request: Request) {
 
   const memberProjectIds = await db.projectMember
     .findMany({ where: { user_id: session.userId }, select: { project_id: true } })
-    .then((rows) => rows.map((r) => r.project_id))
+    .then((rows) => rows.map((r: { project_id: string }) => r.project_id))
 
   const isSuperAdmin = session.systemRole === 'SUPER_ADMIN'
   const projectFilter = isSuperAdmin ? {} : { id: { in: memberProjectIds } }

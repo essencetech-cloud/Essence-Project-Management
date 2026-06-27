@@ -14,5 +14,5 @@ export async function GET() {
     orderBy: { created_at: 'asc' },
   })
 
-  return NextResponse.json(users.map((u) => ({ ...u, created_at: u.created_at.toISOString() })))
+  return NextResponse.json(users.map((u: (typeof users)[number]) => ({ ...u, created_at: u.created_at.toISOString() })))
 }

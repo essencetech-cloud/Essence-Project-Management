@@ -29,7 +29,7 @@ export async function GET(request: Request) {
     orderBy: { updated_at: 'desc' },
   })
 
-  return NextResponse.json(docs.map((d) => ({
+  return NextResponse.json(docs.map((d: (typeof docs)[number]) => ({
     ...d,
     created_at: d.created_at.toISOString(),
     updated_at: d.updated_at.toISOString(),
